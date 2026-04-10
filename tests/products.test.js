@@ -1,4 +1,5 @@
 const request = require('supertest');
+const User = require('../models/User');
 const { setupTestDB, clearDB, teardownTestDB } = require('./testUtils');
 
 jest.mock('../config/cloudinaryConfig', () => ({
@@ -22,10 +23,22 @@ afterAll(async () => {
 });
 
 const createUser = async (role, email) => {
-  const res = await request(app)
+  const password = 'Password1!';
+  await request(app)
     .post('/api/auth/register')
-    .send({ name: `${role} User`, email, password: 'Password1!', role });
-  return res.body.token;
+    .send({ name: `${role} User`, email, password });
+
+  if (role !== 'user') {
+    const user = await User.findOne({ email });
+    user.role = role;
+    await user.save();
+  }
+
+  const loginRes = await request(app)
+    .post('/api/auth/login')
+    .send({ email, password });
+
+  return loginRes.body.token;
 };
 
 describe('Product routes', () => {

@@ -1,4 +1,5 @@
 const request = require('supertest');
+const User = require('../models/User');
 const { setupTestDB, clearDB, teardownTestDB } = require('./testUtils');
 
 jest.mock('../config/cloudinaryConfig', () => ({
@@ -22,11 +23,20 @@ afterAll(async () => {
 });
 
 const createSellerProduct = async () => {
-  const registerRes = await request(app)
+  const password = 'Password1!';
+  await request(app)
     .post('/api/auth/register')
-    .send({ name: 'Order Seller', email: 'order-seller@example.com', password: 'Password1!', role: 'seller' });
+    .send({ name: 'Order Seller', email: 'order-seller@example.com', password });
 
-  const token = registerRes.body.token;
+  const sellerUser = await User.findOne({ email: 'order-seller@example.com' });
+  sellerUser.role = 'seller';
+  await sellerUser.save();
+
+  const loginRes = await request(app)
+    .post('/api/auth/login')
+    .send({ email: 'order-seller@example.com', password });
+
+  const token = loginRes.body.token;
   const createProductRes = await request(app)
     .post('/api/products')
     .set('Authorization', `Bearer ${token}`)
@@ -43,7 +53,7 @@ const createSellerProduct = async () => {
 const createUserToken = async () => {
   const registerRes = await request(app)
     .post('/api/auth/register')
-    .send({ name: 'Order Buyer', email: 'order-user@example.com', password: 'Password1!', role: 'user' });
+    .send({ name: 'Order Buyer', email: 'order-user@example.com', password: 'Password1!' });
   return registerRes.body.token;
 };
 
