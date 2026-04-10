@@ -3,6 +3,15 @@ const { processImages } = require('../middlewares/uploadMiddleware');
 const { cloudinary } = require('../config/cloudinaryConfig');
 const APIFeatures = require('../utils/apiFeatures');
 
+const handleCastError = (error, next) => {
+  if (error.name === 'CastError') {
+    const castError = new Error(`Invalid ${error.path} id`);
+    castError.statusCode = 400;
+    return next(castError);
+  }
+  next(error);
+};
+
 const createProduct = async (req, res, next) => {
   try {
     const images = req.files ? await processImages(req.files) : [];
@@ -18,15 +27,15 @@ const createProduct = async (req, res, next) => {
 
     res.status(201).json({ message: 'Product created successfully', product });
   } catch (error) {
-    next(error);
+    handleCastError(error, next);
   }
 };
 
 const getProducts = async (req, res, next) => {
   try {
-    const features = new APIFeatures(Product.find(), req.query).search().filter().paginate();
-    const products = await features.query.populate('createdBy', 'name email role');
-    const totalProducts = await Product.countDocuments();
+    const features = new APIFeatures(Product.find(), req.query).search().filter();
+    const totalProducts = await features.query.clone().countDocuments();
+    const products = await features.paginate().query.populate('createdBy', 'name email role');
 
     res.json({
       count: products.length,
@@ -35,7 +44,7 @@ const getProducts = async (req, res, next) => {
       products
     });
   } catch (error) {
-    next(error);
+    handleCastError(error, next);
   }
 };
 
@@ -47,7 +56,7 @@ const getProductBySlug = async (req, res, next) => {
     }
     res.json(product);
   } catch (error) {
-    next(error);
+    handleCastError(error, next);
   }
 };
 
@@ -76,7 +85,7 @@ const updateProduct = async (req, res, next) => {
 
     res.json({ message: 'Product updated successfully', product });
   } catch (error) {
-    next(error);
+    handleCastError(error, next);
   }
 };
 
@@ -96,10 +105,10 @@ const deleteProduct = async (req, res, next) => {
       await Promise.all(destroyPromises);
     }
 
-    await product.remove();
+    await product.deleteOne();
     res.json({ message: 'Product removed successfully' });
   } catch (error) {
-    next(error);
+    handleCastError(error, next);
   }
 };
 

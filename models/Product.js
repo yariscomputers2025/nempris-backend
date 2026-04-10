@@ -28,7 +28,7 @@ const productSchema = new mongoose.Schema(
 );
 
 productSchema.pre('validate', function (next) {
-  if (this.name && !this.slug) {
+  if (this.name && (this.isNew || this.isModified('name'))) {
     this.slug = slugify(this.name, { lower: true, strict: true });
   }
   next();

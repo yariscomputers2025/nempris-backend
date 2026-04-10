@@ -1,8 +1,24 @@
-const app = require('./app');
-const connectDB = require('./config/db');
 const dotenv = require('dotenv');
 
 dotenv.config();
+
+const requiredEnv = [
+  'DATABASE_URL',
+  'CLOUDINARY_CLOUD_NAME',
+  'CLOUDINARY_API_KEY',
+  'CLOUDINARY_API_SECRET',
+  'JWT_SECRET'
+];
+
+const missingEnv = requiredEnv.filter((name) => !process.env[name]);
+if (missingEnv.length > 0) {
+  console.error('Missing required environment variables:', missingEnv.join(', '));
+  process.exit(1);
+}
+
+require('./config/cloudinaryConfig');
+const app = require('./app');
+const connectDB = require('./config/db');
 
 const PORT = process.env.PORT || 5000;
 

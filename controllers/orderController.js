@@ -1,6 +1,15 @@
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 
+const handleCastError = (error, next) => {
+  if (error.name === 'CastError') {
+    const castError = new Error(`Invalid ${error.path} id`);
+    castError.statusCode = 400;
+    return next(castError);
+  }
+  next(error);
+};
+
 const createOrder = async (req, res, next) => {
   try {
     const { products, customerName, phone } = req.body;
@@ -27,7 +36,7 @@ const createOrder = async (req, res, next) => {
 
     res.status(201).json({ message: 'Order created successfully', order });
   } catch (error) {
-    next(error);
+    handleCastError(error, next);
   }
 };
 
@@ -44,7 +53,7 @@ const getOrders = async (req, res, next) => {
     const orders = await query.populate('products.product', 'name price slug').populate('seller', 'name email');
     res.json({ count: orders.length, orders });
   } catch (error) {
-    next(error);
+    handleCastError(error, next);
   }
 };
 
@@ -65,7 +74,7 @@ const getOrderById = async (req, res, next) => {
 
     res.json(order);
   } catch (error) {
-    next(error);
+    handleCastError(error, next);
   }
 };
 
@@ -80,7 +89,7 @@ const updateOrderStatus = async (req, res, next) => {
     await order.save();
     res.json({ message: 'Order status updated', order });
   } catch (error) {
-    next(error);
+    handleCastError(error, next);
   }
 };
 
