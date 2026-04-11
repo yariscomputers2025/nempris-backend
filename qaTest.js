@@ -34,7 +34,7 @@ const run = async () => {
   const regSeller = await makeRequest('http://localhost:5000/api/auth/register', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ name: 'Seller QA', email: sellerEmail, password: 'Password1!' })
+    body: JSON.stringify({ name: 'Seller QA', email: sellerEmail, password: 'Password1!', phone: '+254700000001' })
   });
   log('REGISTER_SELLER_RESULT', regSeller);
 
@@ -42,7 +42,7 @@ const run = async () => {
   const regUser = await makeRequest('http://localhost:5000/api/auth/register', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ name: 'Regular QA', email: userEmail, password: 'Password1!' })
+    body: JSON.stringify({ name: 'Regular QA', email: userEmail, password: 'Password1!', phone: '+254700000002' })
   });
   log('REGISTER_USER_RESULT', regUser);
 

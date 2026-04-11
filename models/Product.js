@@ -5,11 +5,11 @@ const productSchema = new mongoose.Schema(
   {
     name: { type: String, required: [true, 'Product name is required'], trim: true },
     slug: { type: String, unique: true, index: true },
-    brand: { type: String, trim: true },
+    brand: { type: mongoose.Schema.Types.ObjectId, ref: 'Brand', required: [true, 'Brand is required'] },
     price: { type: Number, required: [true, 'Price is required'], min: 0 },
     discountPrice: { type: Number, min: 0, default: 0 },
     description: { type: String, trim: true },
-    category: { type: String, default: 'smartphone', trim: true },
+    category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: [true, 'Category is required'] },
     stock: { type: Number, default: 0, min: 0 },
     images: [
       {

@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.use(protect);
 router.get('/', authorizeRoles('admin'), getUsers);
+// router.get('/', getUsers);
+
 router.patch('/:id/role', authorizeRoles('admin'), validateRequest(roleUpdateSchema), updateUserRole);
 router.delete('/:id', authorizeRoles('admin'), deleteUser);
 

@@ -18,6 +18,7 @@ All requests should be made relative to this base path.
   - `name` (string)
   - `email` (string)
   - `password` (string)
+  - `phone` (string)
 
 Example request body:
 
@@ -25,7 +26,8 @@ Example request body:
 {
   "name": "Jane Doe",
   "email": "jane@example.com",
-  "password": "SecurePass123"
+  "password": "SecurePass123",
+  "phone": "+1234567890"
 }
 ```
 
@@ -38,6 +40,7 @@ Example response:
     "id": "6423f4c9e4d4bc7c99f2c3b1",
     "name": "Jane Doe",
     "email": "jane@example.com",
+    "phone": "+1234567890",
     "role": "user"
   },
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI..."
@@ -70,6 +73,7 @@ Example response:
     "id": "6423f4c9e4d4bc7c99f2c3b1",
     "name": "Jane Doe",
     "email": "jane@example.com",
+    "phone": "+1234567890",
     "role": "user"
   },
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI..."
@@ -190,10 +194,10 @@ Example response:
 
 Required fields:
 - `name`
-- `brand`
+- `brand` (ObjectId string)
 - `price`
 - `description`
-- `category`
+- `category` (ObjectId string)
 - `stock`
 - `specifications`
 - `images` (multipart files)
@@ -207,11 +211,17 @@ Example response:
     "_id": "6423f5d4e4d4bc7c99f2c3b2",
     "name": "Test Product",
     "slug": "test-product",
-    "brand": "Example Brand",
+    "brand": {
+      "_id": "6423f5d4e4d4bc7c99f2c3b3",
+      "name": "Apple"
+    },
     "price": 12000,
     "discountPrice": 10000,
     "description": "Test product description",
-    "category": "smartphone",
+    "category": {
+      "_id": "6423f5d4e4d4bc7c99f2c3b4",
+      "name": "Smartphone"
+    },
     "stock": 5,
     "images": [
       {
@@ -223,7 +233,11 @@ Example response:
       "color": "black",
       "memory": "128GB"
     },
-    "createdBy": "6423f4c9e4d4bc7c99f2c3b1"
+    "seller": {
+      "_id": "6423f4c9e4d4bc7c99f2c3b1",
+      "name": "Jane Doe",
+      "phone": "+1234567890"
+    }
   }
 }
 ```
@@ -255,8 +269,34 @@ Example response:
   "product": {
     "_id": "6423f5d4e4d4bc7c99f2c3b2",
     "name": "Updated Product",
+    "slug": "updated-product",
+    "brand": {
+      "_id": "6423f5d4e4d4bc7c99f2c3b3",
+      "name": "Apple"
+    },
     "price": 11000,
-    "stock": 10
+    "discountPrice": 10000,
+    "description": "Updated product description",
+    "category": {
+      "_id": "6423f5d4e4d4bc7c99f2c3b4",
+      "name": "Smartphone"
+    },
+    "stock": 10,
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/.../image.webp",
+        "public_id": "nempris/products/..."
+      }
+    ],
+    "specifications": {
+      "color": "black",
+      "memory": "128GB"
+    },
+    "seller": {
+      "_id": "6423f4c9e4d4bc7c99f2c3b1",
+      "name": "Jane Doe",
+      "phone": "+1234567890"
+    }
   }
 }
 ```
@@ -273,6 +313,350 @@ Example response:
 ```json
 {
   "message": "Product removed successfully"
+}
+```
+
+---
+
+## Seller API
+
+Seller-specific endpoints for managing their own products. Only users with role `seller` can access these.
+
+### Get seller's products
+
+- URL: `GET /api/seller/products`
+- Description: Retrieve all products created by the authenticated seller.
+- Auth: required
+- Role: `seller`
+
+Example response:
+
+```json
+{
+  "count": 2,
+  "products": [
+    {
+      "_id": "6423f5d4e4d4bc7c99f2c3b2",
+      "name": "Test Product",
+      "slug": "test-product",
+      "brand": {
+        "_id": "6423f5d4e4d4bc7c99f2c3b3",
+        "name": "Apple"
+      },
+      "price": 12000,
+      "discountPrice": 10000,
+      "description": "Test product description",
+      "category": {
+        "_id": "6423f5d4e4d4bc7c99f2c3b4",
+        "name": "Smartphone"
+      },
+      "stock": 5,
+      "images": [
+        {
+          "url": "https://res.cloudinary.com/.../image.webp",
+          "public_id": "nempris/products/..."
+        }
+      ],
+      "specifications": {
+        "color": "black",
+        "memory": "128GB"
+      },
+      "seller": {
+        "_id": "6423f4c9e4d4bc7c99f2c3b1",
+        "name": "Jane Doe",
+        "phone": "+1234567890"
+      }
+    }
+  ]
+}
+```
+
+### Update seller's product
+
+- URL: `PATCH /api/seller/products/:id`
+- Description: Update a product owned by the authenticated seller.
+- Auth: required
+- Role: `seller`
+
+Example response:
+
+```json
+{
+  "message": "Product updated successfully",
+  "product": {
+    "_id": "6423f5d4e4d4bc7c99f2c3b2",
+    "name": "Updated Product",
+    "slug": "updated-product",
+    "brand": {
+      "_id": "6423f5d4e4d4bc7c99f2c3b3",
+      "name": "Apple"
+    },
+    "price": 11000,
+    "discountPrice": 10000,
+    "description": "Updated product description",
+    "category": {
+      "_id": "6423f5d4e4d4bc7c99f2c3b4",
+      "name": "Smartphone"
+    },
+    "stock": 10,
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/.../image.webp",
+        "public_id": "nempris/products/..."
+      }
+    ],
+    "specifications": {
+      "color": "black",
+      "memory": "128GB"
+    },
+    "seller": {
+      "_id": "6423f4c9e4d4bc7c99f2c3b1",
+      "name": "Jane Doe",
+      "phone": "+1234567890"
+    }
+  }
+}
+```
+
+### Delete seller's product
+
+- URL: `DELETE /api/seller/products/:id`
+- Description: Remove a product owned by the authenticated seller.
+- Auth: required
+- Role: `seller`
+
+Example response:
+
+```json
+{
+  "message": "Product removed successfully"
+}
+```
+
+---
+
+## Categories API
+
+Admin-only endpoints for managing product categories.
+
+### Create category
+
+- URL: `POST /api/categories`
+- Description: Create a new category.
+- Auth: required
+- Role: `admin`
+
+Request body:
+
+```json
+{
+  "name": "Smartphone"
+}
+```
+
+Example response:
+
+```json
+{
+  "message": "Category created successfully",
+  "category": {
+    "_id": "6423f5d4e4d4bc7c99f2c3b4",
+    "name": "Smartphone",
+    "slug": "smartphone"
+  }
+}
+```
+
+### Get all categories
+
+- URL: `GET /api/categories`
+- Description: Retrieve all categories.
+- Auth: not required
+
+Example response:
+
+```json
+{
+  "count": 1,
+  "categories": [
+    {
+      "_id": "6423f5d4e4d4bc7c99f2c3b4",
+      "name": "Smartphone",
+      "slug": "smartphone"
+    }
+  ]
+}
+```
+
+### Update category
+
+- URL: `PATCH /api/categories/:id`
+- Description: Update a category.
+- Auth: required
+- Role: `admin`
+
+Request body:
+
+```json
+{
+  "name": "Updated Smartphone"
+}
+```
+
+Example response:
+
+```json
+{
+  "message": "Category updated successfully",
+  "category": {
+    "_id": "6423f5d4e4d4bc7c99f2c3b4",
+    "name": "Updated Smartphone",
+    "slug": "updated-smartphone"
+  }
+}
+```
+
+### Delete category
+
+- URL: `DELETE /api/categories/:id`
+- Description: Remove a category.
+- Auth: required
+- Role: `admin`
+
+Example response:
+
+```json
+{
+  "message": "Category removed successfully"
+}
+```
+
+---
+
+## Brands API
+
+Admin-only endpoints for managing product brands.
+
+### Create brand
+
+- URL: `POST /api/brands`
+- Description: Create a new brand.
+- Auth: required
+- Role: `admin`
+
+Request body:
+
+```json
+{
+  "name": "Apple"
+}
+```
+
+Example response:
+
+```json
+{
+  "message": "Brand created successfully",
+  "brand": {
+    "_id": "6423f5d4e4d4bc7c99f2c3b3",
+    "name": "Apple",
+    "slug": "apple"
+  }
+}
+```
+
+### Get all brands
+
+- URL: `GET /api/brands`
+- Description: Retrieve all brands.
+- Auth: not required
+
+Example response:
+
+```json
+{
+  "count": 1,
+  "brands": [
+    {
+      "_id": "6423f5d4e4d4bc7c99f2c3b3",
+      "name": "Apple",
+      "slug": "apple"
+    }
+  ]
+}
+```
+
+### Update brand
+
+- URL: `PATCH /api/brands/:id`
+- Description: Update a brand.
+- Auth: required
+- Role: `admin`
+
+Request body:
+
+```json
+{
+  "name": "Updated Apple"
+}
+```
+
+Example response:
+
+```json
+{
+  "message": "Brand updated successfully",
+  "brand": {
+    "_id": "6423f5d4e4d4bc7c99f2c3b3",
+    "name": "Updated Apple",
+    "slug": "updated-apple"
+  }
+}
+```
+
+### Delete brand
+
+- URL: `DELETE /api/brands/:id`
+- Description: Remove a brand.
+- Auth: required
+- Role: `admin`
+
+Example response:
+
+```json
+{
+  "message": "Brand removed successfully"
+}
+```
+
+---
+
+## Meta API
+
+### Get meta data
+
+- URL: `GET /api/meta`
+- Description: Fetch categories and brands for dropdowns.
+- Auth: not required
+
+Example response:
+
+```json
+{
+  "categories": [
+    {
+      "_id": "6423f5d4e4d4bc7c99f2c3b4",
+      "name": "Smartphone",
+      "slug": "smartphone"
+    }
+  ],
+  "brands": [
+    {
+      "_id": "6423f5d4e4d4bc7c99f2c3b3",
+      "name": "Apple",
+      "slug": "apple"
+    }
+  ]
 }
 ```
 
@@ -414,8 +798,12 @@ fetch('https://nempris-backend.onrender.com/api/products', {
 
 ### 4. Seller creates products
 
-- Seller logs in and uses `POST /api/products`.
-- Seller can also update and delete their products.
+- Fetch categories and brands: `GET /api/meta`
+- Populate dropdowns with the fetched data
+- Seller selects category and brand from dropdowns
+- Submit product with selected ObjectIds using `POST /api/products`
+- Seller can also update and delete their products using `PATCH /api/seller/products/:id` and `DELETE /api/seller/products/:id`.
+- Sellers can view their products using `GET /api/seller/products`.
 
 ### 5. Users browse and order
 
@@ -460,6 +848,10 @@ Common status codes:
 ## Notes for Frontend Developers
 
 - Use `localStorage` or state management to keep the JWT token.
+- Product responses include populated `category`, `brand`, and `seller` (with phone) for frontend-ready data.
+- Use seller phone for WhatsApp integration: `https://wa.me/${seller.phone}?text=Hello, I'm interested in your product: ${product.name}`.
+- Categories and brands are managed by admin only; frontend should fetch them via `GET /api/categories` and `GET /api/brands` for dropdowns.
+- Sellers have dedicated endpoints for managing their own products to ensure ownership security.
 - Do not allow users to select roles on signup.
 - Admin-only pages should verify the user role before calling admin endpoints.
 - Upload images using `multipart/form-data` and the `images` field.

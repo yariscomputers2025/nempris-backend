@@ -59,11 +59,9 @@ Protected routes validate the token and apply role restrictions wherever require
   "name": "Jane Doe",
   "email": "jane@example.com",
   "password": "securePassword",
-  "role": "seller"
+  "phone": "+1234567890"
 }
 ```
-
-- `role` is optional; default is `user`.
 
 ##### Response example
 
@@ -74,7 +72,8 @@ Protected routes validate the token and apply role restrictions wherever require
     "id": "6423f4c9e4d4bc7c99f2c3b1",
     "name": "Jane Doe",
     "email": "jane@example.com",
-    "role": "seller"
+    "phone": "+1234567890",
+    "role": "user"
   },
   "token": "eyJhbGciOiJIUzI1NiIsInR..."
 }
@@ -107,6 +106,7 @@ Protected routes validate the token and apply role restrictions wherever require
     "id": "6423f4c9e4d4bc7c99f2c3b1",
     "name": "Jane Doe",
     "email": "jane@example.com",
+    "phone": "+1234567890",
     "role": "seller"
   },
   "token": "eyJhbGciOiJIUzI1NiIsInR..."
@@ -131,11 +131,11 @@ This endpoint requires `multipart/form-data`.
 
 Fields:
 - `name` (string)
-- `brand` (string)
+- `brand` (ObjectId string) - required, must exist in brands collection
 - `price` (number)
 - `discountPrice` (number)
 - `description` (string)
-- `category` (string)
+- `category` (ObjectId string) - required, must exist in categories collection
 - `stock` (number)
 - `specifications` (JSON string or parsed object)
 - `images` (file[]) max 10
@@ -144,11 +144,11 @@ Example using JSON-style values:
 
 ```text
 name=Test Product
-brand=Example Brand
+brand=6423f5d4e4d4bc7c99f2c3b3
 price=12000
 discountPrice=10000
 description=Test product description
-category=smartphone
+category=6423f5d4e4d4bc7c99f2c3b4
 stock=5
 specifications={"color":"black","memory":"128GB"}
 ```
@@ -164,11 +164,19 @@ And upload images in the `images` field.
     "_id": "6423f5d4e4d4bc7c99f2c3b2",
     "name": "Test Product",
     "slug": "test-product",
-    "brand": "Example Brand",
+    "brand": {
+      "_id": "6423f5d4e4d4bc7c99f2c3b3",
+      "name": "Example Brand",
+      "slug": "example-brand"
+    },
     "price": 12000,
     "discountPrice": 10000,
     "description": "Test product description",
-    "category": "smartphone",
+    "category": {
+      "_id": "6423f5d4e4d4bc7c99f2c3b4",
+      "name": "Smartphone",
+      "slug": "smartphone"
+    },
     "stock": 5,
     "images": [
       {
@@ -217,11 +225,19 @@ And upload images in the `images` field.
       "_id": "6423f5d4e4d4bc7c99f2c3b2",
       "name": "Test Product",
       "slug": "test-product",
-      "brand": "Example Brand",
+      "brand": {
+        "_id": "6423f5d4e4d4bc7c99f2c3b3",
+        "name": "Example Brand",
+        "slug": "example-brand"
+      },
       "price": 12000,
       "discountPrice": 10000,
       "description": "Test product description",
-      "category": "smartphone",
+      "category": {
+        "_id": "6423f5d4e4d4bc7c99f2c3b4",
+        "name": "Smartphone",
+        "slug": "smartphone"
+      },
       "stock": 5,
       "images": [
         {
@@ -233,12 +249,11 @@ And upload images in the `images` field.
         "color": "black",
         "memory": "128GB"
       },
-      "createdBy": {
+      "seller": {
+        "_id": "6423f4c9e4d4bc7c99f2c3b1",
         "name": "Jane Doe",
-        "email": "jane@example.com",
-        "role": "seller"
+        "phone": "+1234567890"
       },
-      "slug": "test-product",
       "createdAt": "2026-04-10T10:00:00.000Z",
       "updatedAt": "2026-04-10T10:00:00.000Z"
     }
@@ -262,11 +277,19 @@ And upload images in the `images` field.
   "_id": "6423f5d4e4d4bc7c99f2c3b2",
   "name": "Test Product",
   "slug": "test-product",
-  "brand": "Example Brand",
+  "brand": {
+    "_id": "6423f5d4e4d4bc7c99f2c3b3",
+    "name": "Example Brand",
+    "slug": "example-brand"
+  },
   "price": 12000,
   "discountPrice": 10000,
   "description": "Test product description",
-  "category": "smartphone",
+  "category": {
+    "_id": "6423f5d4e4d4bc7c99f2c3b4",
+    "name": "Smartphone",
+    "slug": "smartphone"
+  },
   "stock": 5,
   "images": [
     {
@@ -278,10 +301,10 @@ And upload images in the `images` field.
     "color": "black",
     "memory": "128GB"
   },
-  "createdBy": {
+  "seller": {
+    "_id": "6423f4c9e4d4bc7c99f2c3b1",
     "name": "Jane Doe",
-    "email": "jane@example.com",
-    "role": "seller"
+    "phone": "+1234567890"
   },
   "createdAt": "2026-04-10T10:00:00.000Z",
   "updatedAt": "2026-04-10T10:00:00.000Z"
@@ -322,11 +345,19 @@ Include `images` files if replacing image set.
     "_id": "6423f5d4e4d4bc7c99f2c3b2",
     "name": "Updated Product",
     "slug": "updated-product",
-    "brand": "Example Brand",
+    "brand": {
+      "_id": "6423f5d4e4d4bc7c99f2c3b3",
+      "name": "Example Brand",
+      "slug": "example-brand"
+    },
     "price": 13000,
     "discountPrice": 10000,
     "description": "Updated description",
-    "category": "smartphone",
+    "category": {
+      "_id": "6423f5d4e4d4bc7c99f2c3b4",
+      "name": "Smartphone",
+      "slug": "smartphone"
+    },
     "stock": 8,
     "images": [
       {
@@ -338,7 +369,11 @@ Include `images` files if replacing image set.
       "color": "white",
       "memory": "256GB"
     },
-    "createdBy": "6423f4c9e4d4bc7c99f2c3b1",
+    "seller": {
+      "_id": "6423f4c9e4d4bc7c99f2c3b1",
+      "name": "Jane Doe",
+      "phone": "+1234567890"
+    },
     "createdAt": "2026-04-10T10:00:00.000Z",
     "updatedAt": "2026-04-10T11:00:00.000Z"
   }
@@ -360,6 +395,368 @@ Include `images` files if replacing image set.
 ```json
 {
   "message": "Product removed successfully"
+}
+```
+
+---
+
+## Meta
+
+#### Get Meta Data
+
+- Method: `GET`
+- URL: `/api/meta`
+- Description: Retrieve categories and brands for frontend dropdowns.
+- Required auth: No
+
+##### Response example
+
+```json
+{
+  "categories": [
+    {
+      "_id": "6423f5d4e4d4bc7c99f2c3b4",
+      "name": "Smartphone",
+      "slug": "smartphone"
+    },
+    {
+      "_id": "6423f5d4e4d4bc7c99f2c3b5",
+      "name": "Laptop",
+      "slug": "laptop"
+    }
+  ],
+  "brands": [
+    {
+      "_id": "6423f5d4e4d4bc7c99f2c3b3",
+      "name": "Apple",
+      "slug": "apple"
+    },
+    {
+      "_id": "6423f5d4e4d4bc7c99f2c3b6",
+      "name": "Samsung",
+      "slug": "samsung"
+    }
+  ]
+}
+```
+
+---
+
+## Seller
+
+#### Get Seller Products
+
+- Method: `GET`
+- URL: `/api/seller/products`
+- Description: Get all products created by the logged-in seller.
+- Required auth: Yes
+- Roles: `seller`, `admin`
+
+##### Response example
+
+```json
+{
+  "count": 2,
+  "products": [
+    {
+      "_id": "6423f5d4e4d4bc7c99f2c3b2",
+      "name": "Test Product",
+      "slug": "test-product",
+      "brand": {
+        "_id": "6423f5d4e4d4bc7c99f2c3b3",
+        "name": "Apple",
+        "slug": "apple"
+      },
+      "price": 12000,
+      "discountPrice": 10000,
+      "description": "Test product description",
+      "category": {
+        "_id": "6423f5d4e4d4bc7c99f2c3b4",
+        "name": "Smartphone",
+        "slug": "smartphone"
+      },
+      "stock": 5,
+      "images": [
+        {
+          "url": "https://res.cloudinary.com/.../product.webp",
+          "public_id": "nempris/products/..."
+        }
+      ],
+      "specifications": {
+        "color": "black",
+        "memory": "128GB"
+      },
+      "seller": {
+        "_id": "6423f4c9e4d4bc7c99f2c3b1",
+        "name": "Jane Doe",
+        "phone": "+1234567890"
+      },
+      "createdAt": "2026-04-10T10:00:00.000Z",
+      "updatedAt": "2026-04-10T10:00:00.000Z"
+    }
+  ]
+}
+```
+
+#### Update Seller Product
+
+- Method: `PATCH`
+- URL: `/api/seller/products/:id`
+- Description: Update a product owned by the seller.
+- Required auth: Yes
+- Roles: `seller`, `admin`
+
+##### Response example
+
+```json
+{
+  "message": "Product updated successfully",
+  "product": {
+    "_id": "6423f5d4e4d4bc7c99f2c3b2",
+    "name": "Updated Product",
+    "slug": "updated-product",
+    "brand": {
+      "_id": "6423f5d4e4d4bc7c99f2c3b3",
+      "name": "Apple",
+      "slug": "apple"
+    },
+    "price": 13000,
+    "discountPrice": 10000,
+    "description": "Updated description",
+    "category": {
+      "_id": "6423f5d4e4d4bc7c99f2c3b4",
+      "name": "Smartphone",
+      "slug": "smartphone"
+    },
+    "stock": 8,
+    "images": [
+      {
+        "url": "https://res.cloudinary.com/.../product-updated.webp",
+        "public_id": "nempris/products/..."
+      }
+    ],
+    "specifications": {
+      "color": "white",
+      "memory": "256GB"
+    },
+    "seller": {
+      "_id": "6423f4c9e4d4bc7c99f2c3b1",
+      "name": "Jane Doe",
+      "phone": "+1234567890"
+    },
+    "createdAt": "2026-04-10T10:00:00.000Z",
+    "updatedAt": "2026-04-10T11:00:00.000Z"
+  }
+}
+```
+
+#### Delete Seller Product
+
+- Method: `DELETE`
+- URL: `/api/seller/products/:id`
+- Description: Delete a product owned by the seller.
+- Required auth: Yes
+- Roles: `seller`, `admin`
+
+##### Response example
+
+```json
+{
+  "message": "Product removed successfully"
+}
+```
+
+---
+
+## Categories
+
+#### Get Categories
+
+- Method: `GET`
+- URL: `/api/categories`
+- Description: Get all categories.
+- Required auth: No
+
+##### Response example
+
+```json
+{
+  "count": 2,
+  "categories": [
+    {
+      "_id": "6423f5d4e4d4bc7c99f2c3b4",
+      "name": "Smartphone",
+      "slug": "smartphone"
+    },
+    {
+      "_id": "6423f5d4e4d4bc7c99f2c3b5",
+      "name": "Laptop",
+      "slug": "laptop"
+    }
+  ]
+}
+```
+
+#### Create Category
+
+- Method: `POST`
+- URL: `/api/categories`
+- Description: Create a new category.
+- Required auth: Yes
+- Roles: `admin`
+
+##### Request body
+
+```json
+{
+  "name": "Laptops"
+}
+```
+
+##### Response example
+
+```json
+{
+  "message": "Category created successfully",
+  "category": {
+    "_id": "6423f5d4e4d4bc7c99f2c3b5",
+    "name": "Laptops",
+    "slug": "laptops"
+  }
+}
+```
+
+#### Update Category
+
+- Method: `PATCH`
+- URL: `/api/categories/:id`
+- Description: Update a category.
+- Required auth: Yes
+- Roles: `admin`
+
+##### Response example
+
+```json
+{
+  "message": "Category updated successfully",
+  "category": {
+    "_id": "6423f5d4e4d4bc7c99f2c3b5",
+    "name": "Updated Laptops",
+    "slug": "updated-laptops"
+  }
+}
+```
+
+#### Delete Category
+
+- Method: `DELETE`
+- URL: `/api/categories/:id`
+- Description: Delete a category.
+- Required auth: Yes
+- Roles: `admin`
+
+##### Response example
+
+```json
+{
+  "message": "Category removed successfully"
+}
+```
+
+---
+
+## Brands
+
+#### Get Brands
+
+- Method: `GET`
+- URL: `/api/brands`
+- Description: Get all brands.
+- Required auth: No
+
+##### Response example
+
+```json
+{
+  "count": 2,
+  "brands": [
+    {
+      "_id": "6423f5d4e4d4bc7c99f2c3b3",
+      "name": "Apple",
+      "slug": "apple"
+    },
+    {
+      "_id": "6423f5d4e4d4bc7c99f2c3b6",
+      "name": "Samsung",
+      "slug": "samsung"
+    }
+  ]
+}
+```
+
+#### Create Brand
+
+- Method: `POST`
+- URL: `/api/brands`
+- Description: Create a new brand.
+- Required auth: Yes
+- Roles: `admin`
+
+##### Request body
+
+```json
+{
+  "name": "Samsung"
+}
+```
+
+##### Response example
+
+```json
+{
+  "message": "Brand created successfully",
+  "brand": {
+    "_id": "6423f5d4e4d4bc7c99f2c3b6",
+    "name": "Samsung",
+    "slug": "samsung"
+  }
+}
+```
+
+#### Update Brand
+
+- Method: `PATCH`
+- URL: `/api/brands/:id`
+- Description: Update a brand.
+- Required auth: Yes
+- Roles: `admin`
+
+##### Response example
+
+```json
+{
+  "message": "Brand updated successfully",
+  "brand": {
+    "_id": "6423f5d4e4d4bc7c99f2c3b6",
+    "name": "Updated Samsung",
+    "slug": "updated-samsung"
+  }
+}
+```
+
+#### Delete Brand
+
+- Method: `DELETE`
+- URL: `/api/brands/:id`
+- Description: Delete a brand.
+- Required auth: Yes
+- Roles: `admin`
+
+##### Response example
+
+```json
+{
+  "message": "Brand removed successfully"
 }
 ```
 

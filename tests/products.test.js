@@ -26,7 +26,7 @@ const createUser = async (role, email) => {
   const password = 'Password1!';
   await request(app)
     .post('/api/auth/register')
-    .send({ name: `${role} User`, email, password });
+    .send({ name: `${role} User`, email, password, phone: `+123456789${Math.floor(Math.random() * 10)}` });
 
   if (role !== 'user') {
     const user = await User.findOne({ email });

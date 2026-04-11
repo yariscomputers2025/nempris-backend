@@ -26,7 +26,7 @@ const createSellerProduct = async () => {
   const password = 'Password1!';
   await request(app)
     .post('/api/auth/register')
-    .send({ name: 'Order Seller', email: 'order-seller@example.com', password });
+    .send({ name: 'Order Seller', email: 'order-seller@example.com', password, phone: '+1234567896' });
 
   const sellerUser = await User.findOne({ email: 'order-seller@example.com' });
   sellerUser.role = 'seller';
@@ -53,7 +53,7 @@ const createSellerProduct = async () => {
 const createUserToken = async () => {
   const registerRes = await request(app)
     .post('/api/auth/register')
-    .send({ name: 'Order Buyer', email: 'order-user@example.com', password: 'Password1!' });
+    .send({ name: 'Order Buyer', email: 'order-user@example.com', password: 'Password1!', phone: '+1234567897' });
   return registerRes.body.token;
 };
 

@@ -26,10 +26,10 @@ describe('Auth routes', () => {
   test('Register creates a new user and returns a JWT', async () => {
     const res = await request(app)
       .post('/api/auth/register')
-      .send({ name: 'Test User', email: 'test@example.com', password: 'Password1!' });
+      .send({ name: 'Test User', email: 'test@example.com', password: 'Password1!', phone: '+1234567890' });
 
     expect(res.status).toBe(201);
-    expect(res.body.user).toMatchObject({ name: 'Test User', email: 'test@example.com', role: 'user' });
+    expect(res.body.user).toMatchObject({ name: 'Test User', email: 'test@example.com', role: 'user', phone: '+1234567890' });
     expect(res.body.user.password).toBeUndefined();
     expect(res.body.token).toBeDefined();
   });
@@ -37,7 +37,7 @@ describe('Auth routes', () => {
   test('Login returns valid token for existing user', async () => {
     await request(app)
       .post('/api/auth/register')
-      .send({ name: 'Test User', email: 'login@example.com', password: 'Password1!' });
+      .send({ name: 'Test User', email: 'login@example.com', password: 'Password1!', phone: '+1234567891' });
 
     const res = await request(app)
       .post('/api/auth/login')
@@ -51,7 +51,7 @@ describe('Auth routes', () => {
   test('Invalid login returns 401', async () => {
     await request(app)
       .post('/api/auth/register')
-      .send({ name: 'Test User', email: 'badlogin@example.com', password: 'Password1!' });
+      .send({ name: 'Test User', email: 'badlogin@example.com', password: 'Password1!', phone: '+1234567892' });
 
     const res = await request(app)
       .post('/api/auth/login')
@@ -72,7 +72,7 @@ describe('Auth routes', () => {
     const password = 'Password1!';
     await request(app)
       .post('/api/auth/register')
-      .send({ name: 'Regular User', email: 'promote@example.com', password });
+      .send({ name: 'Regular User', email: 'promote@example.com', password, phone: '+1234567893' });
 
     const admin = await User.create({ name: 'System Admin', email: 'admin@example.com', password, role: 'admin' });
     const loginRes = await request(app)
@@ -93,10 +93,10 @@ describe('Auth routes', () => {
     const password = 'Password1!';
     await request(app)
       .post('/api/auth/register')
-      .send({ name: 'First User', email: 'first@example.com', password });
+      .send({ name: 'First User', email: 'first@example.com', password, phone: '+1234567894' });
     const registerRes = await request(app)
       .post('/api/auth/register')
-      .send({ name: 'Second User', email: 'second@example.com', password });
+      .send({ name: 'Second User', email: 'second@example.com', password, phone: '+1234567895' });
 
     const res = await request(app)
       .patch(`/api/users/${registerRes.body.user.id}/role`)

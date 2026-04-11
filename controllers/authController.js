@@ -7,16 +7,16 @@ const createToken = (userId) => {
 
 const register = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phone } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return next({ statusCode: 400, message: 'Email already registered' });
     }
 
-    const user = await User.create({ name, email, password });
+    const user = await User.create({ name, email, password, phone });
     res.status(201).json({
       message: 'Registration successful',
-      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+      user: { id: user._id, name: user.name, email: user.email, phone: user.phone, role: user.role },
       token: createToken(user._id)
     });
   } catch (error) {
@@ -34,7 +34,7 @@ const login = async (req, res, next) => {
 
     res.json({
       message: 'Login successful',
-      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+      user: { id: user._id, name: user.name, email: user.email, phone: user.phone, role: user.role },
       token: createToken(user._id)
     });
   } catch (error) {
